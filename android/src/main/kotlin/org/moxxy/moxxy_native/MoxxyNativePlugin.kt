@@ -31,6 +31,8 @@ import org.moxxy.moxxy_native.notifications.showNotificationImpl
 import org.moxxy.moxxy_native.picker.FilePickerType
 import org.moxxy.moxxy_native.picker.MoxxyPickerApi
 import org.moxxy.moxxy_native.picker.PickerResultListener
+import org.moxxy.moxxy_native.platform.MoxxyPlatformApi
+import org.moxxy.moxxy_native.platform.PlatformImplementation
 
 object MoxxyEventChannels {
     var notificationChannel: EventChannel? = null
@@ -63,16 +65,19 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi, MoxxyNot
     private lateinit var pickerListener: PickerResultListener
     private val cryptographyImplementation = CryptographyImplementation()
     private lateinit var contactsImplementation: ContactsImplementation
+    private lateinit var platformImplementation: PlatformImplementation
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
         contactsImplementation = ContactsImplementation(context!!)
+        platformImplementation = PlatformImplementation(context!!)
 
         // Register the pigeon handlers
         MoxxyPickerApi.setUp(flutterPluginBinding.binaryMessenger, this)
         MoxxyNotificationsApi.setUp(flutterPluginBinding.binaryMessenger, this)
         MoxxyCryptographyApi.setUp(flutterPluginBinding.binaryMessenger, cryptographyImplementation)
         MoxxyContactsApi.setUp(flutterPluginBinding.binaryMessenger, contactsImplementation)
+        MoxxyPlatformApi.setUp(flutterPluginBinding.binaryMessenger, platformImplementation)
 
         // Register the picker handler
         pickerListener = PickerResultListener(context!!)
