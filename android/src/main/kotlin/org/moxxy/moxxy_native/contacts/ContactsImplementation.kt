@@ -17,7 +17,7 @@ class ContactsImplementation(private val context: Context) : MoxxyContactsApi {
         name: String,
         jid: String,
         avatarPath: String?,
-        fallbackIcon: FallbackIconType
+        fallbackIcon: FallbackIconType,
     ) {
         val pkgName = context.packageName
         val intent = Intent(context, Class.forName("$pkgName.MainActivity")).apply {
@@ -49,7 +49,7 @@ class ContactsImplementation(private val context: Context) : MoxxyContactsApi {
             shortcutBuilder.setIcon(icon)
             personBuilder.setIcon(icon)
         } else {
-            val resourceId = when(fallbackIcon) {
+            val resourceId = when (fallbackIcon) {
                 FallbackIconType.NONE, FallbackIconType.PERSON -> R.mipmap.person
                 FallbackIconType.NOTES -> R.mipmap.notes
             }

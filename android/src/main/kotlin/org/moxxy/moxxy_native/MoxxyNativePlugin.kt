@@ -17,6 +17,8 @@ import org.moxxy.moxxy_native.contacts.ContactsImplementation
 import org.moxxy.moxxy_native.contacts.MoxxyContactsApi
 import org.moxxy.moxxy_native.cryptography.CryptographyImplementation
 import org.moxxy.moxxy_native.cryptography.MoxxyCryptographyApi
+import org.moxxy.moxxy_native.media.MediaImplementation
+import org.moxxy.moxxy_native.media.MoxxyMediaApi
 import org.moxxy.moxxy_native.notifications.MessagingNotification
 import org.moxxy.moxxy_native.notifications.MoxxyNotificationsApi
 import org.moxxy.moxxy_native.notifications.NotificationChannel
@@ -65,6 +67,7 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi, MoxxyNot
     private val cryptographyImplementation = CryptographyImplementation()
     private lateinit var contactsImplementation: ContactsImplementation
     private lateinit var platformImplementation: PlatformImplementation
+    private val mediaImplementation = MediaImplementation()
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
@@ -77,6 +80,7 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi, MoxxyNot
         MoxxyCryptographyApi.setUp(flutterPluginBinding.binaryMessenger, cryptographyImplementation)
         MoxxyContactsApi.setUp(flutterPluginBinding.binaryMessenger, contactsImplementation)
         MoxxyPlatformApi.setUp(flutterPluginBinding.binaryMessenger, platformImplementation)
+        MoxxyMediaApi.setUp(flutterPluginBinding.binaryMessenger, mediaImplementation)
 
         // Register the picker handler
         pickerListener = PickerResultListener(context!!)
