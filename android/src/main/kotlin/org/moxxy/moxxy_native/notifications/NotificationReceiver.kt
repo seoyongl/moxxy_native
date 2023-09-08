@@ -27,19 +27,6 @@ import org.moxxy.moxxy_native.TAP_ACTION
 import java.io.File
 import java.time.Instant
 
-fun extractPayloadMapFromIntent(intent: Intent): Map<String?, String?> {
-    val extras = mutableMapOf<String?, String?>()
-    intent.extras?.keySet()!!.forEach {
-        Log.d(TAG, "Checking $it -> ${intent.extras!!.get(it)}")
-        if (it.startsWith("payload_")) {
-            Log.d(TAG, "Adding $it")
-            extras[it.substring(8)] = intent.extras!!.getString(it)
-        }
-    }
-
-    return extras
-}
-
 class NotificationReceiver : BroadcastReceiver() {
     /*
      * Dismisses the notification through which we received @intent.

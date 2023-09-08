@@ -1,14 +1,12 @@
 package org.moxxy.moxxy_native
 
 import android.app.Activity
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.NonNull
-import androidx.core.app.NotificationManagerCompat
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -19,17 +17,9 @@ import org.moxxy.moxxy_native.cryptography.CryptographyImplementation
 import org.moxxy.moxxy_native.cryptography.MoxxyCryptographyApi
 import org.moxxy.moxxy_native.media.MediaImplementation
 import org.moxxy.moxxy_native.media.MoxxyMediaApi
-import org.moxxy.moxxy_native.notifications.MessagingNotification
 import org.moxxy.moxxy_native.notifications.MoxxyNotificationsApi
-import org.moxxy.moxxy_native.notifications.NotificationChannel
-import org.moxxy.moxxy_native.notifications.NotificationDataManager
 import org.moxxy.moxxy_native.notifications.NotificationEvent
-import org.moxxy.moxxy_native.notifications.NotificationGroup
-import org.moxxy.moxxy_native.notifications.NotificationI18nData
-import org.moxxy.moxxy_native.notifications.RegularNotification
-import org.moxxy.moxxy_native.notifications.createNotificationChannelsImpl
-import org.moxxy.moxxy_native.notifications.createNotificationGroupsImpl
-import org.moxxy.moxxy_native.notifications.showNotificationImpl
+import org.moxxy.moxxy_native.notifications.NotificationsImplementation
 import org.moxxy.moxxy_native.picker.FilePickerType
 import org.moxxy.moxxy_native.picker.MoxxyPickerApi
 import org.moxxy.moxxy_native.picker.PickerResultListener
@@ -60,7 +50,7 @@ object NotificationCache {
     var lastEvent: NotificationEvent? = null
 }
 
-class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi, MoxxyNotificationsApi {
+class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi {
     private var context: Context? = null
     private var activity: Activity? = null
     private lateinit var pickerListener: PickerResultListener
@@ -68,15 +58,17 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi, MoxxyNot
     private lateinit var contactsImplementation: ContactsImplementation
     private lateinit var platformImplementation: PlatformImplementation
     private val mediaImplementation = MediaImplementation()
+    private lateinit var notificationsImplementation: NotificationsImplementation
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
         contactsImplementation = ContactsImplementation(context!!)
         platformImplementation = PlatformImplementation(context!!)
+        notificationsImplementation = NotificationsImplementation(context!!)
 
         // Register the pigeon handlers
         MoxxyPickerApi.setUp(flutterPluginBinding.binaryMessenger, this)
-        MoxxyNotificationsApi.setUp(flutterPluginBinding.binaryMessenger, this)
+        MoxxyNotificationsApi.setUp(flutterPluginBinding.binaryMessenger, notificationsImplementation)
         MoxxyCryptographyApi.setUp(flutterPluginBinding.binaryMessenger, cryptographyImplementation)
         MoxxyContactsApi.setUp(flutterPluginBinding.binaryMessenger, contactsImplementation)
         MoxxyPlatformApi.setUp(flutterPluginBinding.binaryMessenger, platformImplementation)
@@ -166,55 +158,5 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi, MoxxyNot
         val contract = ActivityResultContracts.PickVisualMedia()
         val pickIntent = contract.createIntent(context!!, PickVisualMediaRequest(pickType))
         activity?.startActivityForResult(pickIntent, PICK_FILE_WITH_DATA_REQUEST)
-    }
-
-    override fun createNotificationGroups(groups: List<NotificationGroup>) {
-        createNotificationGroupsImpl(context!!, groups)
-    }
-
-    override fun deleteNotificationGroups(ids: List<String>) {
-        val notificationManager = context!!.getSystemService(NotificationManager::class.java)
-        for (id in ids) {
-            notificationManager.deleteNotificationChannelGroup(id)
-        }
-    }
-
-    override fun createNotificationChannels(channels: List<NotificationChannel>) {
-        createNotificationChannelsImpl(context!!, channels)
-    }
-
-    override fun deleteNotificationChannels(ids: List<String>) {
-        val notificationManager = context!!.getSystemService(NotificationManager::class.java)
-        for (id in ids) {
-            notificationManager.deleteNotificationChannel(id)
-        }
-    }
-
-    override fun showMessagingNotification(notification: MessagingNotification) {
-        org.moxxy.moxxy_native.notifications.showMessagingNotification(context!!, notification)
-    }
-
-    override fun showNotification(notification: RegularNotification) {
-        showNotificationImpl(context!!, notification)
-    }
-
-    override fun dismissNotification(id: Long) {
-        NotificationManagerCompat.from(context!!).cancel(id.toInt())
-    }
-
-    override fun setNotificationSelfAvatar(path: String) {
-        NotificationDataManager.setAvatarPath(context!!, path)
-    }
-
-    override fun setNotificationI18n(data: NotificationI18nData) {
-        NotificationDataManager.apply {
-            setYou(context!!, data.you)
-            setReply(context!!, data.reply)
-            setMarkAsRead(context!!, data.markAsRead)
-        }
-    }
-
-    override fun notificationStub(event: NotificationEvent) {
-        TODO("Not yet implemented")
     }
 }
