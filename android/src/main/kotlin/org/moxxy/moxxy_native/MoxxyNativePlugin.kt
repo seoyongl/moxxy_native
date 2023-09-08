@@ -61,7 +61,6 @@ object NotificationCache {
 class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi, MoxxyNotificationsApi {
     private var context: Context? = null
     private var activity: Activity? = null
-    private lateinit var activityClass: Class<Any>
     private lateinit var pickerListener: PickerResultListener
     private val cryptographyImplementation = CryptographyImplementation()
     private lateinit var contactsImplementation: ContactsImplementation
@@ -90,7 +89,6 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi, MoxxyNot
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
-        activityClass = activity!!.javaClass
         binding.addActivityResultListener(pickerListener)
         Log.d(TAG, "Attached to activity")
     }
