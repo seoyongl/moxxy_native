@@ -66,5 +66,19 @@
       # an used parameter.
       GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${sdk}/share/android-sdk/build-tools/34.0.0/aapt2";
     };
+
+    apps = {
+      androidLint = let 
+        script = pkgs.writeShellScript "lint-android.sh" ''
+        ${pkgs.ktlint}/bin/ktlint \
+          --format \
+          --disabled_rules=standard:package-name \
+          android/src/main/kotlin/org/moxxy/moxxy_native/
+        '';
+      in {
+        program = "${script}";
+        type = "app";
+      };
+    };
   });
 }

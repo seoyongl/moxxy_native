@@ -1,7 +1,18 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:moxxy_native/moxxy_native.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+@pragma('vm:entry-point')
+Future<void> entrypoint() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  print('CALLED FROM NEW FLUTTERENGINE');
+  final extra = await MoxxyBackgroundServiceApi().getExtraData();
+  print('EXTRA DATA: $extra');
+}
 
 void main() {
   runApp(const MyApp());
@@ -96,6 +107,32 @@ class MyAppState extends State<MyApp> {
               child: const Text('Test cryptography'),
             ),
             if (imagePath != null) Image.file(File(imagePath!)),
+            TextButton(
+                onPressed: () async {
+                  // Create channel
+                  await MoxxyNotificationsApi().createNotificationChannels(
+                    [
+                      NotificationChannel(
+                        id: 'foreground_service',
+                        title: 'Foreground service',
+                        description: 'lol',
+                        importance: NotificationChannelImportance.MIN,
+                        showBadge: false,
+                        vibration: false,
+                        enableLights: false,
+                      ),
+                    ],
+                  );
+
+                  await Permission.notification.request();
+
+                  final handle = PluginUtilities.getCallbackHandle(entrypoint)!
+                      .toRawHandle();
+                  final api = MoxxyServiceApi();
+                  await api.configure(handle, 'lol');
+                  await api.start();
+                },
+                child: const Text('Start foreground service')),
           ],
         ),
       ),

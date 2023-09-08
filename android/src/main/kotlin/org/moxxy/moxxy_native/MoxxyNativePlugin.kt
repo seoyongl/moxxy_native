@@ -10,6 +10,8 @@ import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.embedding.engine.plugins.service.ServiceAware
+import io.flutter.embedding.engine.plugins.service.ServicePluginBinding
 import io.flutter.plugin.common.EventChannel
 import org.moxxy.moxxy_native.contacts.ContactsImplementation
 import org.moxxy.moxxy_native.contacts.MoxxyContactsApi
@@ -25,6 +27,10 @@ import org.moxxy.moxxy_native.picker.MoxxyPickerApi
 import org.moxxy.moxxy_native.picker.PickerResultListener
 import org.moxxy.moxxy_native.platform.MoxxyPlatformApi
 import org.moxxy.moxxy_native.platform.PlatformImplementation
+import org.moxxy.moxxy_native.service.BackgroundService
+import org.moxxy.moxxy_native.service.MoxxyServiceApi
+import org.moxxy.moxxy_native.service.PluginTracker
+import org.moxxy.moxxy_native.service.ServiceImplementation
 
 object MoxxyEventChannels {
     var notificationChannel: EventChannel? = null
@@ -50,7 +56,7 @@ object NotificationCache {
     var lastEvent: NotificationEvent? = null
 }
 
-class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi {
+class MoxxyNativePlugin : FlutterPlugin, ActivityAware, ServiceAware, MoxxyPickerApi {
     private var context: Context? = null
     private var activity: Activity? = null
     private lateinit var pickerListener: PickerResultListener
@@ -59,12 +65,20 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi {
     private lateinit var platformImplementation: PlatformImplementation
     private val mediaImplementation = MediaImplementation()
     private lateinit var notificationsImplementation: NotificationsImplementation
+    private lateinit var serviceImplementation: ServiceImplementation
+
+    var service: BackgroundService? = null
+
+    init {
+        PluginTracker.instances.add(this)
+    }
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
         contactsImplementation = ContactsImplementation(context!!)
         platformImplementation = PlatformImplementation(context!!)
         notificationsImplementation = NotificationsImplementation(context!!)
+        serviceImplementation = ServiceImplementation(context!!)
 
         // Register the pigeon handlers
         MoxxyPickerApi.setUp(flutterPluginBinding.binaryMessenger, this)
@@ -73,6 +87,7 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi {
         MoxxyContactsApi.setUp(flutterPluginBinding.binaryMessenger, contactsImplementation)
         MoxxyPlatformApi.setUp(flutterPluginBinding.binaryMessenger, platformImplementation)
         MoxxyMediaApi.setUp(flutterPluginBinding.binaryMessenger, mediaImplementation)
+        MoxxyServiceApi.setUp(flutterPluginBinding.binaryMessenger, serviceImplementation)
 
         // Register the picker handler
         pickerListener = PickerResultListener(context!!)
@@ -101,6 +116,16 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi {
     override fun onDetachedFromActivity() {
         activity = null
         Log.d(TAG, "Detached from activity")
+    }
+
+    override fun onAttachedToService(binding: ServicePluginBinding) {
+        Log.d(TAG, "Attached to service")
+        service = binding.getService() as BackgroundService
+    }
+
+    override fun onDetachedFromService() {
+        Log.d(TAG, "Detached from service")
+        service = null
     }
 
     override fun pickFiles(

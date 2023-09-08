@@ -37,3 +37,16 @@ const val SHARED_PREFERENCES_AVATAR_KEY = "avatar_path"
 const val PICK_FILE_REQUEST = 42
 const val PICK_FILES_REQUEST = 43
 const val PICK_FILE_WITH_DATA_REQUEST = 44
+
+// Service
+const val SERVICE_SHARED_PREFERENCES_KEY = "me.polynom.moxplatform_android"
+const val SERVICE_ENTRYPOINT_KEY = "entrypoint_handle"
+const val SERVICE_EXTRA_DATA_KEY = "extra_data"
+const val SERVICE_START_AT_BOOT_KEY = "auto_start_at_boot"
+const val SERVICE_MANUALLY_STOPPED_KEY = "manually_stopped"
+
+// https://github.com/ekasetiawans/flutter_background_service/blob/e427f3b70138ec26f9671c2617f9061f25eade6f/packages/flutter_background_service_android/android/src/main/java/id/flutter/flutter_background_service/BootReceiver.java#L20
+const val SERVICE_WAKELOCK_DURATION = 10 * 60 * 1000L
+const val SERVICE_DEFAULT_TITLE = "Moxxy"
+const val SERVICE_DEFAULT_BODY = "Preparing..."
+const val SERVICE_BACKGROUND_METHOD_CHANNEL_KEY = "org.moxxy.moxxy_native/background"

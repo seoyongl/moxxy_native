@@ -4,7 +4,7 @@
     <application>
         <provider
             android:name="org.moxxy.moxxy_native.content.MoxxyFileProvider"
-            android:authorities="org.moxxy.moxxyv2.fileprovider"
+            android:authorities="org.moxxy.moxxyv2.fileprovider2"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -12,8 +12,36 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <service
+            android:enabled="true"
+            android:exported="true"
+            android:name="org.moxxy.moxxy_native.service.BackgroundService"
+            />
+
+        <receiver
+            android:name="org.moxxy.moxxy_native.service.WatchdogReceiver"
+            android:enabled="true"
+            android:exported="true"
+            />
+
+        <receiver android:name="org.moxxy.moxxy_native.service.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
         <receiver android:name="org.moxxy.moxxy_native.notifications.NotificationReceiver" />
     </application>
 
+    <!-- Foreground service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <!-- Notifications -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 </manifest>
