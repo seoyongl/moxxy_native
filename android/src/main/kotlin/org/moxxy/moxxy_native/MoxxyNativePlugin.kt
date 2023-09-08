@@ -13,6 +13,8 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.EventChannel
+import org.moxxy.moxxy_native.cryptography.CryptographyImplementation
+import org.moxxy.moxxy_native.cryptography.MoxxyCryptographyApi
 import org.moxxy.moxxy_native.notifications.MessagingNotification
 import org.moxxy.moxxy_native.notifications.MoxxyNotificationsApi
 import org.moxxy.moxxy_native.notifications.NotificationChannel
@@ -57,11 +59,13 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi, MoxxyNot
     private var activity: Activity? = null
     private lateinit var activityClass: Class<Any>
     private lateinit var pickerListener: PickerResultListener
+    private val cryptographyImplementation = CryptographyImplementation()
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
         MoxxyPickerApi.setUp(flutterPluginBinding.binaryMessenger, this)
         MoxxyNotificationsApi.setUp(flutterPluginBinding.binaryMessenger, this)
+        MoxxyCryptographyApi.setUp(flutterPluginBinding.binaryMessenger, cryptographyImplementation)
         pickerListener = PickerResultListener(context!!)
         Log.d(TAG, "Attached to engine")
     }

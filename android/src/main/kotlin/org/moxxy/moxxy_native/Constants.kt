@@ -2,6 +2,9 @@ package org.moxxy.moxxy_native
 
 const val TAG = "moxxy_native"
 
+// The size of buffers to use for various operations
+const val BUFFER_SIZE = 4096
+
 // The data key for text entered in the notification's reply field
 const val REPLY_TEXT_KEY = "key_reply_text"
 
