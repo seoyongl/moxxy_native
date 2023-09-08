@@ -7,6 +7,7 @@ linter:
     avoid_positional_boolean_parameters: false
     avoid_bool_literals_in_conditional_expressions: false
     file_names: false
+    one_member_abstracts: false
 
 analyzer:
   exclude:

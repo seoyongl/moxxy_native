@@ -3,7 +3,8 @@ import 'package:pigeon/pigeon.dart';
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/pigeon/notifications.g.dart',
-    kotlinOut: 'android/src/main/kotlin/org/moxxy/moxxy_native/notifications/NotificationsApi.kt',
+    kotlinOut:
+        'android/src/main/kotlin/org/moxxy/moxxy_native/notifications/NotificationsApi.kt',
     kotlinOptions: KotlinOptions(
       package: 'org.moxxy.moxxy_native.notifications',
     ),
@@ -54,9 +55,16 @@ class NotificationMessage {
 }
 
 class MessagingNotification {
-  const MessagingNotification(this.title, this.id, this.jid, this.messages,
-      this.channelId, this.isGroupchat, this.extra,
-      {this.groupId});
+  const MessagingNotification(
+    this.title,
+    this.id,
+    this.jid,
+    this.messages,
+    this.channelId,
+    this.isGroupchat,
+    this.extra, {
+    this.groupId,
+  });
 
   /// The title of the conversation.
   final String title;
@@ -91,8 +99,13 @@ enum NotificationIcon {
 
 class RegularNotification {
   const RegularNotification(
-      this.title, this.body, this.channelId, this.id, this.icon,
-      {this.groupId});
+    this.title,
+    this.body,
+    this.channelId,
+    this.id,
+    this.icon, {
+    this.groupId,
+  });
 
   /// The title of the notification.
   final String title;
@@ -165,6 +178,7 @@ class NotificationGroup {
   final String description;
 }
 
+// ignore: constant_identifier_names
 enum NotificationChannelImportance { MIN, HIGH, DEFAULT }
 
 class NotificationChannel {

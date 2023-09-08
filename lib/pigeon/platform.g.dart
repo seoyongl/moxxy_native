@@ -20,10 +20,10 @@ class MoxxyPlatformApi {
 
   Future<String> getPersistentDataPath() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.moxxy_native.MoxxyPlatformApi.getPersistentDataPath', codec,
+        'dev.flutter.pigeon.moxxy_native.MoxxyPlatformApi.getPersistentDataPath',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -47,10 +47,10 @@ class MoxxyPlatformApi {
 
   Future<String> getCacheDataPath() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.moxxy_native.MoxxyPlatformApi.getCacheDataPath', codec,
+        'dev.flutter.pigeon.moxxy_native.MoxxyPlatformApi.getCacheDataPath',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -74,10 +74,10 @@ class MoxxyPlatformApi {
 
   Future<void> openBatteryOptimisationSettings() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.moxxy_native.MoxxyPlatformApi.openBatteryOptimisationSettings', codec,
+        'dev.flutter.pigeon.moxxy_native.MoxxyPlatformApi.openBatteryOptimisationSettings',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -96,10 +96,10 @@ class MoxxyPlatformApi {
 
   Future<bool> isIgnoringBatteryOptimizations() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.moxxy_native.MoxxyPlatformApi.isIgnoringBatteryOptimizations', codec,
+        'dev.flutter.pigeon.moxxy_native.MoxxyPlatformApi.isIgnoringBatteryOptimizations',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',

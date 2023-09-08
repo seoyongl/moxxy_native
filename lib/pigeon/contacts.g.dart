@@ -25,12 +25,18 @@ class MoxxyContactsApi {
 
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
-  Future<void> recordSentMessage(String arg_name, String arg_jid, String? arg_avatarPath, FallbackIconType arg_fallbackIcon) async {
+  Future<void> recordSentMessage(String arg_name, String arg_jid,
+      String? arg_avatarPath, FallbackIconType arg_fallbackIcon) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.moxxy_native.MoxxyContactsApi.recordSentMessage', codec,
+        'dev.flutter.pigeon.moxxy_native.MoxxyContactsApi.recordSentMessage',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_name, arg_jid, arg_avatarPath, arg_fallbackIcon.index]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[
+      arg_name,
+      arg_jid,
+      arg_avatarPath,
+      arg_fallbackIcon.index
+    ]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',

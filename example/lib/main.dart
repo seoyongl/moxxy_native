@@ -55,11 +55,12 @@ class MyAppState extends State<MyApp> {
             ),
             TextButton(
               onPressed: () async {
-                final result = await MoxxyPickerApi().pickFiles(FilePickerType.image, false);
+                final result = await MoxxyPickerApi()
+                    .pickFiles(FilePickerType.image, false);
                 if (result.isEmpty) return;
 
-                final encDest = result.first! + '.enc';
-                final decDest = result.first! + '.dec';
+                final encDest = '${result.first!}.enc';
+                final decDest = '${result.first!}.dec';
                 final encResult = await MoxxyCryptographyApi().encryptFile(
                   result.first!,
                   encDest,
@@ -69,6 +70,7 @@ class MyAppState extends State<MyApp> {
                   'SHA-256',
                 );
                 if (encResult == null) {
+                  // ignore: avoid_print
                   print('Failed to encrypt file');
                   return;
                 }
@@ -82,6 +84,7 @@ class MyAppState extends State<MyApp> {
                   'SHA-256',
                 );
                 if (decResult == null) {
+                  // ignore: avoid_print
                   print('Failed to decrypt file');
                   return;
                 }
@@ -90,11 +93,9 @@ class MyAppState extends State<MyApp> {
                   imagePath = decDest;
                 });
               },
-              child: Text('Test cryptography'),
+              child: const Text('Test cryptography'),
             ),
-
-            if (imagePath != null)
-              Image.file(File(imagePath!)),
+            if (imagePath != null) Image.file(File(imagePath!)),
           ],
         ),
       ),

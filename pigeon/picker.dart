@@ -3,13 +3,13 @@ import 'package:pigeon/pigeon.dart';
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/pigeon/picker.g.dart',
-    kotlinOut: 'android/src/main/kotlin/org/moxxy/moxxy_native/picker/PickerApi.kt',
+    kotlinOut:
+        'android/src/main/kotlin/org/moxxy/moxxy_native/picker/PickerApi.kt',
     kotlinOptions: KotlinOptions(
       package: 'org.moxxy.moxxy_native.picker',
     ),
   ),
 )
-
 enum FilePickerType {
   /// Pick only image(s)
   image,

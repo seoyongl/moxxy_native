@@ -55,7 +55,7 @@ class _MoxxyCryptographyApiCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128: 
+      case 128:
         return CryptographyResult.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -73,12 +73,25 @@ class MoxxyCryptographyApi {
 
   static const MessageCodec<Object?> codec = _MoxxyCryptographyApiCodec();
 
-  Future<CryptographyResult?> encryptFile(String arg_sourcePath, String arg_destPath, Uint8List arg_key, Uint8List arg_iv, CipherAlgorithm arg_algorithm, String arg_hashSpec) async {
+  Future<CryptographyResult?> encryptFile(
+      String arg_sourcePath,
+      String arg_destPath,
+      Uint8List arg_key,
+      Uint8List arg_iv,
+      CipherAlgorithm arg_algorithm,
+      String arg_hashSpec) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.moxxy_native.MoxxyCryptographyApi.encryptFile', codec,
+        'dev.flutter.pigeon.moxxy_native.MoxxyCryptographyApi.encryptFile',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_sourcePath, arg_destPath, arg_key, arg_iv, arg_algorithm.index, arg_hashSpec]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[
+      arg_sourcePath,
+      arg_destPath,
+      arg_key,
+      arg_iv,
+      arg_algorithm.index,
+      arg_hashSpec
+    ]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -95,12 +108,25 @@ class MoxxyCryptographyApi {
     }
   }
 
-  Future<CryptographyResult?> decryptFile(String arg_sourcePath, String arg_destPath, Uint8List arg_key, Uint8List arg_iv, CipherAlgorithm arg_algorithm, String arg_hashSpec) async {
+  Future<CryptographyResult?> decryptFile(
+      String arg_sourcePath,
+      String arg_destPath,
+      Uint8List arg_key,
+      Uint8List arg_iv,
+      CipherAlgorithm arg_algorithm,
+      String arg_hashSpec) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.moxxy_native.MoxxyCryptographyApi.decryptFile', codec,
+        'dev.flutter.pigeon.moxxy_native.MoxxyCryptographyApi.decryptFile',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_sourcePath, arg_destPath, arg_key, arg_iv, arg_algorithm.index, arg_hashSpec]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[
+      arg_sourcePath,
+      arg_destPath,
+      arg_key,
+      arg_iv,
+      arg_algorithm.index,
+      arg_hashSpec
+    ]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -117,12 +143,13 @@ class MoxxyCryptographyApi {
     }
   }
 
-  Future<Uint8List?> hashFile(String arg_sourcePath, String arg_hashSpec) async {
+  Future<Uint8List?> hashFile(
+      String arg_sourcePath, String arg_hashSpec) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.moxxy_native.MoxxyCryptographyApi.hashFile', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_sourcePath, arg_hashSpec]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_sourcePath, arg_hashSpec]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',

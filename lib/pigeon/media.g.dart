@@ -18,12 +18,14 @@ class MoxxyMediaApi {
 
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
-  Future<bool> generateVideoThumbnail(String arg_src, String arg_dest, int arg_maxWidth) async {
+  Future<bool> generateVideoThumbnail(
+      String arg_src, String arg_dest, int arg_maxWidth) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.moxxy_native.MoxxyMediaApi.generateVideoThumbnail', codec,
+        'dev.flutter.pigeon.moxxy_native.MoxxyMediaApi.generateVideoThumbnail',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_src, arg_dest, arg_maxWidth]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_src, arg_dest, arg_maxWidth]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',

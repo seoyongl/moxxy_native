@@ -3,7 +3,8 @@ import 'package:pigeon/pigeon.dart';
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/pigeon/cryptography.g.dart',
-    kotlinOut: 'android/src/main/kotlin/org/moxxy/moxxy_native/cryptography/CryptographyApi.kt',
+    kotlinOut:
+        'android/src/main/kotlin/org/moxxy/moxxy_native/cryptography/CryptographyApi.kt',
     kotlinOptions: KotlinOptions(
       package: 'org.moxxy.moxxy_native.cryptography',
     ),
@@ -24,11 +25,28 @@ class CryptographyResult {
 @HostApi()
 abstract class MoxxyCryptographyApi {
   @async
-  CryptographyResult? encryptFile(String sourcePath, String destPath, Uint8List key, Uint8List iv, CipherAlgorithm algorithm, String hashSpec);
+  CryptographyResult? encryptFile(
+    String sourcePath,
+    String destPath,
+    Uint8List key,
+    Uint8List iv,
+    CipherAlgorithm algorithm,
+    String hashSpec,
+  );
 
   @async
-  CryptographyResult? decryptFile(String sourcePath, String destPath, Uint8List key, Uint8List iv, CipherAlgorithm algorithm, String hashSpec);
+  CryptographyResult? decryptFile(
+    String sourcePath,
+    String destPath,
+    Uint8List key,
+    Uint8List iv,
+    CipherAlgorithm algorithm,
+    String hashSpec,
+  );
 
   @async
-  Uint8List? hashFile(String sourcePath, String hashSpec);
+  Uint8List? hashFile(
+    String sourcePath,
+    String hashSpec,
+  );
 }
