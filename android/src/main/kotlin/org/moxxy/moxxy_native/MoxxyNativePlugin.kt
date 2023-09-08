@@ -13,6 +13,8 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.EventChannel
+import org.moxxy.moxxy_native.contacts.ContactsImplementation
+import org.moxxy.moxxy_native.contacts.MoxxyContactsApi
 import org.moxxy.moxxy_native.cryptography.CryptographyImplementation
 import org.moxxy.moxxy_native.cryptography.MoxxyCryptographyApi
 import org.moxxy.moxxy_native.notifications.MessagingNotification
@@ -60,12 +62,19 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, MoxxyPickerApi, MoxxyNot
     private lateinit var activityClass: Class<Any>
     private lateinit var pickerListener: PickerResultListener
     private val cryptographyImplementation = CryptographyImplementation()
+    private lateinit var contactsImplementation: ContactsImplementation
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
+        contactsImplementation = ContactsImplementation(context!!)
+
+        // Register the pigeon handlers
         MoxxyPickerApi.setUp(flutterPluginBinding.binaryMessenger, this)
         MoxxyNotificationsApi.setUp(flutterPluginBinding.binaryMessenger, this)
         MoxxyCryptographyApi.setUp(flutterPluginBinding.binaryMessenger, cryptographyImplementation)
+        MoxxyContactsApi.setUp(flutterPluginBinding.binaryMessenger, contactsImplementation)
+
+        // Register the picker handler
         pickerListener = PickerResultListener(context!!)
         Log.d(TAG, "Attached to engine")
     }
