@@ -1,3 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="org.moxxy.moxxy_native">
+    package="org.moxxy.moxxy_native">
+
+    <application>
+        <provider
+            android:name="org.moxxy.moxxy_native.content.MoxxyFileProvider"
+            android:authorities="org.moxxy.moxxyv2.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <receiver android:name="org.moxxy.moxxy_native.notifications.NotificationReceiver" />
+    </application>
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 </manifest>

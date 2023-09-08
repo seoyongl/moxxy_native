@@ -11,10 +11,13 @@ import 'package:flutter/services.dart';
 enum FilePickerType {
   /// Pick only image(s)
   image,
+
   /// Pick only video(s)
   video,
+
   /// Pick image(s) and video(s)
   imageAndVideo,
+
   /// Pick any kind of file(s)
   generic,
 }
@@ -37,12 +40,13 @@ class MoxxyPickerApi {
   ///
   /// [multiple] controls whether multiple files can be picked (true) or just a single file
   /// is enough (false).
-  Future<List<String?>> pickFiles(FilePickerType arg_type, bool arg_multiple) async {
+  Future<List<String?>> pickFiles(
+      FilePickerType arg_type, bool arg_multiple) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.moxxy_native.MoxxyPickerApi.pickFiles', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_type.index, arg_multiple]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_type.index, arg_multiple]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -67,7 +71,8 @@ class MoxxyPickerApi {
   /// Like [pickFiles] but sets multiple to false and returns the raw binary data from the file.
   Future<Uint8List?> pickFileWithData(FilePickerType arg_type) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.moxxy_native.MoxxyPickerApi.pickFileWithData', codec,
+        'dev.flutter.pigeon.moxxy_native.MoxxyPickerApi.pickFileWithData',
+        codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
         await channel.send(<Object?>[arg_type.index]) as List<Object?>?;

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:moxxy_native/moxxy_native.dart';
 
@@ -21,7 +19,8 @@ class MyApp extends StatelessWidget {
           children: [
             TextButton(
               onPressed: () async {
-                final result = await MoxxyPickerApi().pickFiles(FilePickerType.image, false);
+                final result = await MoxxyPickerApi()
+                    .pickFiles(FilePickerType.image, false);
                 // ignore: avoid_print
                 print('User picked: $result');
               },
@@ -29,7 +28,8 @@ class MyApp extends StatelessWidget {
             ),
             TextButton(
               onPressed: () async {
-                final result = await MoxxyPickerApi().pickFiles(FilePickerType.imageAndVideo, true);
+                final result = await MoxxyPickerApi()
+                    .pickFiles(FilePickerType.imageAndVideo, true);
                 // ignore: avoid_print
                 print('User picked: $result');
               },
@@ -37,7 +37,8 @@ class MyApp extends StatelessWidget {
             ),
             TextButton(
               onPressed: () async {
-                final result = await MoxxyPickerApi().pickFiles(FilePickerType.generic, true);
+                final result = await MoxxyPickerApi()
+                    .pickFiles(FilePickerType.generic, true);
                 // ignore: avoid_print
                 print('User picked: $result');
               },
