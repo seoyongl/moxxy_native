@@ -24,6 +24,7 @@ import org.moxxy.moxxy_native.SERVICE_DEFAULT_BODY
 import org.moxxy.moxxy_native.SERVICE_DEFAULT_TITLE
 import org.moxxy.moxxy_native.SERVICE_ENTRYPOINT_KEY
 import org.moxxy.moxxy_native.SERVICE_EXTRA_DATA_KEY
+import org.moxxy.moxxy_native.SERVICE_FOREGROUND_METHOD_CHANNEL_KEY
 import org.moxxy.moxxy_native.SERVICE_MANUALLY_STOPPED_KEY
 import org.moxxy.moxxy_native.SERVICE_SHARED_PREFERENCES_KEY
 import org.moxxy.moxxy_native.SERVICE_START_AT_BOOT_KEY
@@ -256,7 +257,7 @@ class BackgroundService : Service(), MoxxyBackgroundServiceApi {
 
     override fun sendData(data: String) {
         LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(
-            Intent(SERVICE_BACKGROUND_METHOD_CHANNEL_KEY).apply {
+            Intent(SERVICE_FOREGROUND_METHOD_CHANNEL_KEY).apply {
                 putExtra("data", data)
             },
         )

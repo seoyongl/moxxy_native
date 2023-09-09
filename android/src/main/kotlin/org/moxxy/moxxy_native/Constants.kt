@@ -49,4 +49,5 @@ const val SERVICE_MANUALLY_STOPPED_KEY = "manually_stopped"
 const val SERVICE_WAKELOCK_DURATION = 10 * 60 * 1000L
 const val SERVICE_DEFAULT_TITLE = "Moxxy"
 const val SERVICE_DEFAULT_BODY = "Preparing..."
+const val SERVICE_FOREGROUND_METHOD_CHANNEL_KEY = "org.moxxy.moxxy_native/foreground"
 const val SERVICE_BACKGROUND_METHOD_CHANNEL_KEY = "org.moxxy.moxxy_native/background"

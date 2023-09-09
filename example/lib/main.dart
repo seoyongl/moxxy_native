@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:moxxy_native/moxxy_native.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -10,8 +11,19 @@ Future<void> entrypoint() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   print('CALLED FROM NEW FLUTTERENGINE');
-  final extra = await MoxxyBackgroundServiceApi().getExtraData();
+  final api = MoxxyBackgroundServiceApi();
+  final extra = await api.getExtraData();
   print('EXTRA DATA: $extra');
+
+  MethodChannel('org.moxxy.moxxy_native/background').setMethodCallHandler((call) async {
+    print('[BG] Received ${call.method} with ${call.arguments}');
+  });
+
+  print('Waiting...');
+  await Future<void>.delayed(const Duration(seconds: 5));
+
+  await api.sendData('Hello from the foreground service');
+  print('Data sent');
 }
 
 void main() {
@@ -130,6 +142,10 @@ class MyAppState extends State<MyApp> {
                       .toRawHandle();
                   final api = MoxxyServiceApi();
                   await api.configure(handle, 'lol');
+                  MethodChannel("org.moxxy.moxxy_native/foreground").setMethodCallHandler((call) async {
+                    print('[FG] Received ${call.method} with ${call.arguments}');
+                    await api.sendData('Hello from the foreground');
+                  });
                   await api.start();
                 },
                 child: const Text('Start foreground service')),

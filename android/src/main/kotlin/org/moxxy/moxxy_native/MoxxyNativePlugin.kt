@@ -1,18 +1,22 @@
 package org.moxxy.moxxy_native
 
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.util.Log
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.NonNull
-import io.flutter.embedding.engine.plugins.FlutterPlugin
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.service.ServiceAware
 import io.flutter.embedding.engine.plugins.service.ServicePluginBinding
 import io.flutter.plugin.common.EventChannel
+import io.flutter.plugin.common.MethodChannel
 import org.moxxy.moxxy_native.contacts.ContactsImplementation
 import org.moxxy.moxxy_native.contacts.MoxxyContactsApi
 import org.moxxy.moxxy_native.cryptography.CryptographyImplementation
@@ -56,7 +60,7 @@ object NotificationCache {
     var lastEvent: NotificationEvent? = null
 }
 
-class MoxxyNativePlugin : FlutterPlugin, ActivityAware, ServiceAware, MoxxyPickerApi {
+class MoxxyNativePlugin : FlutterPlugin, ActivityAware, ServiceAware, BroadcastReceiver(), MoxxyPickerApi {
     private var context: Context? = null
     private var activity: Activity? = null
     private lateinit var pickerListener: PickerResultListener
@@ -68,6 +72,8 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, ServiceAware, MoxxyPicke
     private lateinit var serviceImplementation: ServiceImplementation
 
     var service: BackgroundService? = null
+
+    var channel: MethodChannel? = null
 
     init {
         PluginTracker.instances.add(this)
@@ -89,12 +95,23 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, ServiceAware, MoxxyPicke
         MoxxyMediaApi.setUp(flutterPluginBinding.binaryMessenger, mediaImplementation)
         MoxxyServiceApi.setUp(flutterPluginBinding.binaryMessenger, serviceImplementation)
 
+        // Special handling for the service APIs
+        channel = MethodChannel(flutterPluginBinding.getBinaryMessenger(), SERVICE_FOREGROUND_METHOD_CHANNEL_KEY)
+        LocalBroadcastManager.getInstance(context!!).registerReceiver(
+            this,
+            IntentFilter(SERVICE_FOREGROUND_METHOD_CHANNEL_KEY)
+        )
+
         // Register the picker handler
         pickerListener = PickerResultListener(context!!)
         Log.d(TAG, "Attached to engine")
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+        LocalBroadcastManager.getInstance(context!!).registerReceiver(
+            this,
+             IntentFilter(SERVICE_FOREGROUND_METHOD_CHANNEL_KEY),
+        )
         Log.d(TAG, "Detached from engine")
     }
 
@@ -183,5 +200,13 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, ServiceAware, MoxxyPicke
         val contract = ActivityResultContracts.PickVisualMedia()
         val pickIntent = contract.createIntent(context!!, PickVisualMediaRequest(pickType))
         activity?.startActivityForResult(pickIntent, PICK_FILE_WITH_DATA_REQUEST)
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        Log.d(TAG, "Received intent with ${intent.action}")
+        if (intent.action?.equals(SERVICE_FOREGROUND_METHOD_CHANNEL_KEY) == true) {
+            val data = intent.getStringExtra("data")
+            channel?.invokeMethod("dataReceived", data)
+        }
     }
 }
