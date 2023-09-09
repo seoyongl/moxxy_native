@@ -1,29 +1,23 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:moxxy_native/moxxy_native.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+@pragma('vm:entrypoint')
+Future<void> serviceHandleData(Map<String, dynamic>? data) async {
+  print('[BG] Received data $data');
+  GetIt.I.get<BackgroundService>().send(
+    TestEvent(),
+    id: data!['id']! as String,
+  );
+}
+
 @pragma('vm:entry-point')
-Future<void> entrypoint() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  print('CALLED FROM NEW FLUTTERENGINE');
-  final api = MoxxyBackgroundServiceApi();
-  final extra = await api.getExtraData();
-  print('EXTRA DATA: $extra');
-
-  MethodChannel('org.moxxy.moxxy_native/background').setMethodCallHandler((call) async {
-    print('[BG] Received ${call.method} with ${call.arguments}');
-  });
-
-  print('Waiting...');
-  await Future<void>.delayed(const Duration(seconds: 5));
-
-  await api.sendData('Hello from the foreground service');
-  print('Data sent');
+Future<void> serviceEntrypoint(String initialLocale) async {
+  print('Initial locale: $initialLocale');
 }
 
 void main() {
@@ -35,6 +29,20 @@ class MyApp extends StatefulWidget {
 
   @override
   MyAppState createState() => MyAppState();
+}
+
+class TestCommand extends BackgroundCommand {
+  @override
+  Map<String, dynamic> toJson() => {
+    'request': 'return_name',
+  };
+}
+
+class TestEvent extends BackgroundEvent {
+  @override
+  Map<String, dynamic> toJson() => {
+    'name': 'Moxxy',
+  };
 }
 
 class MyAppState extends State<MyApp> {
@@ -138,15 +146,23 @@ class MyAppState extends State<MyApp> {
 
                   await Permission.notification.request();
 
-                  final handle = PluginUtilities.getCallbackHandle(entrypoint)!
-                      .toRawHandle();
-                  final api = MoxxyServiceApi();
-                  await api.configure(handle, 'lol');
-                  MethodChannel("org.moxxy.moxxy_native/foreground").setMethodCallHandler((call) async {
-                    print('[FG] Received ${call.method} with ${call.arguments}');
-                    await api.sendData('Hello from the foreground');
-                  });
-                  await api.start();
+                  final srv = ForegroundService();
+                  await srv.start(
+                    const ServiceConfig(
+                      serviceEntrypoint,
+                      serviceHandleData,
+                      'en',
+                    ),
+                    (data) async {
+                      print('[FG] Received data $data');
+                    },
+                  );
+
+                  await Future<void>.delayed(const Duration(milliseconds: 600));
+                  await srv.dataSender.sendData(
+                    TestCommand(),
+                    awaitable: false,
+                  );
                 },
                 child: const Text('Start foreground service')),
           ],

@@ -6,3 +6,4 @@ export 'pigeon/notifications.g.dart';
 export 'pigeon/picker.g.dart';
 export 'pigeon/platform.g.dart';
 export 'pigeon/service.g.dart';
+export 'src/service.dart';
