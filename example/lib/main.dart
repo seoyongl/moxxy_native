@@ -127,21 +127,23 @@ class MyAppState extends State<MyApp> {
             TextButton(
                 onPressed: () async {
                   // Create channel
-                  await MoxxyNotificationsApi().createNotificationChannels(
-                    [
-                      NotificationChannel(
-                        id: 'foreground_service',
-                        title: 'Foreground service',
-                        description: 'lol',
-                        importance: NotificationChannelImportance.MIN,
-                        showBadge: false,
-                        vibration: false,
-                        enableLights: false,
-                      ),
-                    ],
-                  );
+                  if (Platform.isAndroid) {
+                    await MoxxyNotificationsApi().createNotificationChannels(
+                      [
+                        NotificationChannel(
+                          id: 'foreground_service',
+                          title: 'Foreground service',
+                          description: 'lol',
+                          importance: NotificationChannelImportance.MIN,
+                          showBadge: false,
+                          vibration: false,
+                          enableLights: false,
+                        ),
+                      ],
+                    );
 
-                  await Permission.notification.request();
+                    await Permission.notification.request();
+                  }
 
                   final srv = getForegroundService();
                   await srv.start(

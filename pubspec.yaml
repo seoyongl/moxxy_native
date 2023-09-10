@@ -29,3 +29,5 @@ flutter:
       android:
         package: org.moxxy.moxxy_native
         pluginClass: MoxxyNativePlugin
+      linux:
+        pluginClass: MoxxyNativePlugin

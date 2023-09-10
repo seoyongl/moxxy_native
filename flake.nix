@@ -51,6 +51,9 @@
         # Android
         pinnedJDK sdk ktlint
 
+        # Linux
+        clang cmake gtk3 ninja pkg-config xz pcre2 glib
+
         # Flutter
         flutterVersion
 
