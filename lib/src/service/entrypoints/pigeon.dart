@@ -8,7 +8,7 @@ import 'package:moxxy_native/src/service/config.dart';
 /// An entrypoint that should be used when the service runs
 /// in a new Flutter Engine.
 @pragma('vm:entry-point')
-Future<void> pigeonEntrypoint() async {
+Future<void> pigeonEntrypoint(dynamic _) async {
   // ignore: avoid_print
   print('androidEntrypoint: Called on new FlutterEngine');
 

@@ -3,6 +3,7 @@ import 'package:moxlib/moxlib.dart';
 import 'package:moxxy_native/src/service/config.dart';
 import 'package:moxxy_native/src/service/datasender/types.dart';
 import 'package:moxxy_native/src/service/exceptions.dart';
+import 'package:moxxy_native/src/service/foreground/isolate.dart';
 import 'package:moxxy_native/src/service/foreground/pigeon.dart';
 
 /// Wrapper API that is only available to the UI isolate.
@@ -40,6 +41,8 @@ ForegroundService getForegroundService() {
   if (_service == null) {
     if (Platform.isAndroid) {
       _service = PigeonForegroundService();
+    } else if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+      _service = IsolateForegroundService();
     } else {
       throw UnsupportedPlatformException();
     }

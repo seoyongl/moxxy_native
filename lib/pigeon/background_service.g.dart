@@ -20,10 +20,10 @@ class MoxxyBackgroundServiceApi {
 
   Future<String> getExtraData() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.moxxy_native.MoxxyBackgroundServiceApi.getExtraData', codec,
+        'dev.flutter.pigeon.moxxy_native.MoxxyBackgroundServiceApi.getExtraData',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -47,7 +47,8 @@ class MoxxyBackgroundServiceApi {
 
   Future<void> setNotificationBody(String arg_body) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.moxxy_native.MoxxyBackgroundServiceApi.setNotificationBody', codec,
+        'dev.flutter.pigeon.moxxy_native.MoxxyBackgroundServiceApi.setNotificationBody',
+        codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
         await channel.send(<Object?>[arg_body]) as List<Object?>?;
@@ -69,7 +70,8 @@ class MoxxyBackgroundServiceApi {
 
   Future<void> sendData(String arg_data) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.moxxy_native.MoxxyBackgroundServiceApi.sendData', codec,
+        'dev.flutter.pigeon.moxxy_native.MoxxyBackgroundServiceApi.sendData',
+        codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
         await channel.send(<Object?>[arg_data]) as List<Object?>?;
@@ -93,8 +95,7 @@ class MoxxyBackgroundServiceApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.moxxy_native.MoxxyBackgroundServiceApi.stop', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
