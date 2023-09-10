@@ -6,9 +6,6 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat
 import org.moxxy.moxxy_native.MoxxyNativePlugin
-import org.moxxy.moxxy_native.SERVICE_ENTRYPOINT_KEY
-import org.moxxy.moxxy_native.SERVICE_EXTRA_DATA_KEY
-import org.moxxy.moxxy_native.SERVICE_SHARED_PREFERENCES_KEY
 import org.moxxy.moxxy_native.TAG
 import org.moxxy.moxxy_native.service.BackgroundServiceStatic.setStartAtBoot
 
@@ -18,10 +15,11 @@ object PluginTracker {
 
 class ServiceImplementation(private val context: Context) : MoxxyServiceApi {
     override fun configure(handle: Long, extraData: String) {
-        context.getSharedPreferences(SERVICE_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE).edit()
-            .putLong(SERVICE_ENTRYPOINT_KEY, handle)
-            .putString(SERVICE_EXTRA_DATA_KEY, extraData)
-            .apply()
+        BackgroundServiceStatic.setConfiguration(
+            context,
+            handle,
+            extraData,
+        )
     }
 
     override fun isRunning(): Boolean {

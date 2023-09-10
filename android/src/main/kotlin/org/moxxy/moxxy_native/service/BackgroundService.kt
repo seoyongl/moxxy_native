@@ -66,6 +66,13 @@ object BackgroundServiceStatic {
         )
     }
 
+    fun setConfiguration(context: Context, handle: Long, extraData: String) {
+        context.getSharedPreferences(SERVICE_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE).edit()
+            .putLong(SERVICE_ENTRYPOINT_KEY, handle)
+            .putString(SERVICE_EXTRA_DATA_KEY, extraData)
+            .apply()
+    }
+
     fun getStartAtBoot(context: Context): Boolean {
         return context.getSharedPreferences(SERVICE_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
             .getBoolean(
@@ -86,6 +93,19 @@ object BackgroundServiceStatic {
                 SERVICE_MANUALLY_STOPPED_KEY,
                 false,
             )
+    }
+
+    fun setManuallyStopped(context: Context, value: Boolean) {
+        context.getSharedPreferences(SERVICE_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE).edit()
+            .putBoolean(SERVICE_MANUALLY_STOPPED_KEY, value)
+            .apply()
+    }
+
+    fun getHandle(context: Context): Long {
+        return context.getSharedPreferences(SERVICE_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE).getLong(
+            SERVICE_ENTRYPOINT_KEY,
+            0,
+        )
     }
 }
 
@@ -109,19 +129,6 @@ class BackgroundService : Service(), MoxxyBackgroundServiceApi {
     // Data for the notification
     private var notificationTitle: String = SERVICE_DEFAULT_TITLE
     private var notificationBody: String = SERVICE_DEFAULT_BODY
-
-    private fun setManuallyStopped(context: Context, value: Boolean) {
-        context.getSharedPreferences(SERVICE_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE).edit()
-            .putBoolean(SERVICE_MANUALLY_STOPPED_KEY, value)
-            .apply()
-    }
-
-    private fun getHandle(): Long {
-        return getSharedPreferences(SERVICE_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE).getLong(
-            SERVICE_ENTRYPOINT_KEY,
-            0,
-        )
-    }
 
     private fun updateNotificationInfo() {
         val mutable =
@@ -167,7 +174,7 @@ class BackgroundService : Service(), MoxxyBackgroundServiceApi {
                 null,
             )
             val callback: FlutterCallbackInformation =
-                FlutterCallbackInformation.lookupCallbackInformation(getHandle())
+                FlutterCallbackInformation.lookupCallbackInformation(BackgroundServiceStatic.getHandle(this))
             if (callback == null) {
                 Log.e(TAG, "Callback handle not found")
                 return
@@ -209,7 +216,7 @@ class BackgroundService : Service(), MoxxyBackgroundServiceApi {
         if (!isManuallyStopped) {
             BackgroundServiceStatic.enqueue(this)
         } else {
-            setManuallyStopped(applicationContext, true)
+            BackgroundServiceStatic.setManuallyStopped(applicationContext, true)
         }
 
         // Dispose of the engine
@@ -232,15 +239,11 @@ class BackgroundService : Service(), MoxxyBackgroundServiceApi {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        setManuallyStopped(this, false)
+        BackgroundServiceStatic.setManuallyStopped(this, false)
         BackgroundServiceStatic.enqueue(this)
         runService()
 
         return START_STICKY
-    }
-
-    override fun getHandler(): Long {
-        return getHandle()
     }
 
     override fun getExtraData(): String {

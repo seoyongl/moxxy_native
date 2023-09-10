@@ -12,8 +12,6 @@ import 'package:pigeon/pigeon.dart';
 )
 @HostApi()
 abstract class MoxxyBackgroundServiceApi {
-  int getHandler();
-
   String getExtraData();
 
   void setNotificationBody(String body);

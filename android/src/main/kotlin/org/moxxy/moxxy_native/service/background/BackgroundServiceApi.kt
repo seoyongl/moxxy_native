@@ -43,7 +43,6 @@ class FlutterError(
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface MoxxyBackgroundServiceApi {
-    fun getHandler(): Long
     fun getExtraData(): String
     fun setNotificationBody(body: String)
     fun sendData(data: String)
@@ -58,22 +57,6 @@ interface MoxxyBackgroundServiceApi {
         /** Sets up an instance of `MoxxyBackgroundServiceApi` to handle messages through the `binaryMessenger`. */
         @Suppress("UNCHECKED_CAST")
         fun setUp(binaryMessenger: BinaryMessenger, api: MoxxyBackgroundServiceApi?) {
-            run {
-                val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.moxxy_native.MoxxyBackgroundServiceApi.getHandler", codec)
-                if (api != null) {
-                    channel.setMessageHandler { _, reply ->
-                        var wrapped: List<Any?>
-                        try {
-                            wrapped = listOf<Any?>(api.getHandler())
-                        } catch (exception: Throwable) {
-                            wrapped = wrapError(exception)
-                        }
-                        reply.reply(wrapped)
-                    }
-                } else {
-                    channel.setMessageHandler(null)
-                }
-            }
             run {
                 val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.moxxy_native.MoxxyBackgroundServiceApi.getExtraData", codec)
                 if (api != null) {

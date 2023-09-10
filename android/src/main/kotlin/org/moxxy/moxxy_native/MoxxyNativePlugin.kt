@@ -10,9 +10,9 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.NonNull
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
-import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.service.ServiceAware
 import io.flutter.embedding.engine.plugins.service.ServicePluginBinding
 import io.flutter.plugin.common.EventChannel
@@ -99,7 +99,7 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, ServiceAware, BroadcastR
         channel = MethodChannel(flutterPluginBinding.getBinaryMessenger(), SERVICE_FOREGROUND_METHOD_CHANNEL_KEY)
         LocalBroadcastManager.getInstance(context!!).registerReceiver(
             this,
-            IntentFilter(SERVICE_FOREGROUND_METHOD_CHANNEL_KEY)
+            IntentFilter(SERVICE_FOREGROUND_METHOD_CHANNEL_KEY),
         )
 
         // Register the picker handler
@@ -110,7 +110,7 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, ServiceAware, BroadcastR
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         LocalBroadcastManager.getInstance(context!!).registerReceiver(
             this,
-             IntentFilter(SERVICE_FOREGROUND_METHOD_CHANNEL_KEY),
+            IntentFilter(SERVICE_FOREGROUND_METHOD_CHANNEL_KEY),
         )
         Log.d(TAG, "Detached from engine")
     }
