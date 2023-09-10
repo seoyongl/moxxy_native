@@ -10,7 +10,6 @@ import 'package:pigeon/pigeon.dart';
     ),
   ),
 )
-
 @HostApi()
 abstract class MoxxyServiceApi {
   void configure(int handle, String extraData);

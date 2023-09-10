@@ -6,4 +6,7 @@ export 'pigeon/notifications.g.dart';
 export 'pigeon/picker.g.dart';
 export 'pigeon/platform.g.dart';
 export 'pigeon/service.g.dart';
-export 'src/service.dart';
+export 'src/service/background/base.dart';
+export 'src/service/config.dart';
+export 'src/service/datasender/types.dart';
+export 'src/service/foreground/base.dart';
