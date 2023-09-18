@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -50,6 +49,19 @@ class TestEvent extends BackgroundEvent {
 
 class MyAppState extends State<MyApp> {
   String? imagePath;
+
+  @override
+  void initState() {
+    super.initState();
+
+    const EventChannel('org.moxxy.moxxyv2/notification_stream')
+        .receiveBroadcastStream()
+        .listen(
+      (event) {
+        print('Keyboard height: ${event as double}');
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -221,6 +233,7 @@ class MyAppState extends State<MyApp> {
               },
               child: const Text('Share some text'),
             ),
+            const TextField(),
           ],
         ),
       ),

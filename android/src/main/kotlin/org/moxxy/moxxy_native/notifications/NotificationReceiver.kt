@@ -164,7 +164,7 @@ class NotificationReceiver : BroadcastReceiver() {
         }
     }
 
-    fun handleTap(context: Context, intent: Intent) {
+    private fun handleTap(context: Context, intent: Intent) {
         MoxxyEventChannels.notificationEventSink?.success(
             NotificationEvent(
                 intent.getLongExtra(NOTIFICATION_EXTRA_ID_KEY, -1),

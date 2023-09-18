@@ -27,3 +27,7 @@ Thanks to [ekasetiawans](https://github.com/ekasetiawans) for [flutter_backgroun
 was essentially the blueprint for the service and background service APIs. They were reimplemented
 to allow the root isolate to pass some additional data to the service, which `flutter_background_service`
 did not support.
+
+Thanks to [nschairer](https://github.com/nschairer) for [flutter_keyboard_height](https://github.com/nschairer/keyboard_height_plugin), which was the base for keeping track of the keyboard height.
+Due to having an issue with the height calculation if the Android device uses gesture navigation, I
+[forked the package](https://git.polynom.me/moxxy/keyboard_height_plugin) and modified the height calculation.

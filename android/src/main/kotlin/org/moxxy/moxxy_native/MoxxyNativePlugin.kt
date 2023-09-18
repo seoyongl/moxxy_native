@@ -29,6 +29,7 @@ import org.moxxy.moxxy_native.notifications.NotificationsImplementation
 import org.moxxy.moxxy_native.picker.FilePickerType
 import org.moxxy.moxxy_native.picker.MoxxyPickerApi
 import org.moxxy.moxxy_native.picker.PickerResultListener
+import org.moxxy.moxxy_native.platform.KeyboardStreamHandler
 import org.moxxy.moxxy_native.platform.MoxxyPlatformApi
 import org.moxxy.moxxy_native.platform.PlatformImplementation
 import org.moxxy.moxxy_native.service.BackgroundService
@@ -102,6 +103,10 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, ServiceAware, BroadcastR
             IntentFilter(SERVICE_FOREGROUND_METHOD_CHANNEL_KEY),
         )
 
+        // Special handling for the keyboard height
+        val keyboardChannel = EventChannel(flutterPluginBinding.getBinaryMessenger(), KEYBOARD_HEIGHT_EVENT_CHANNEL_NAME)
+        keyboardChannel?.setStreamHandler(KeyboardStreamHandler)
+
         // Register the picker handler
         pickerListener = PickerResultListener(context!!)
         Log.d(TAG, "Attached to engine")
@@ -118,20 +123,24 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, ServiceAware, BroadcastR
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
         binding.addActivityResultListener(pickerListener)
+        KeyboardStreamHandler.activity = activity
         Log.d(TAG, "Attached to activity")
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
         activity = null
+        KeyboardStreamHandler.activity = null
         Log.d(TAG, "Detached from activity")
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
         activity = binding.activity
+        KeyboardStreamHandler.activity = activity
     }
 
     override fun onDetachedFromActivity() {
         activity = null
+        KeyboardStreamHandler.activity = null
         Log.d(TAG, "Detached from activity")
     }
 
