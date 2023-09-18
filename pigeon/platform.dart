@@ -10,6 +10,13 @@ import 'package:pigeon/pigeon.dart';
     ),
   ),
 )
+class ShareItem {
+  const ShareItem(this.path, this.mime, this.text);
+  final String? path;
+  final String mime;
+  final String? text;
+}
+
 @HostApi()
 abstract class MoxxyPlatformApi {
   String getPersistentDataPath();
@@ -19,4 +26,6 @@ abstract class MoxxyPlatformApi {
   void openBatteryOptimisationSettings();
 
   bool isIgnoringBatteryOptimizations();
+
+  void shareItems(List<ShareItem> items, String genericMimeType);
 }

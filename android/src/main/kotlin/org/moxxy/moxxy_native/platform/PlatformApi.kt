@@ -8,6 +8,8 @@ import io.flutter.plugin.common.BasicMessageChannel
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MessageCodec
 import io.flutter.plugin.common.StandardMessageCodec
+import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
 
 private fun wrapResult(result: Any?): List<Any?> {
     return listOf(result)
@@ -41,17 +43,66 @@ class FlutterError(
     val details: Any? = null,
 ) : Throwable()
 
+/** Generated class from Pigeon that represents data sent in messages. */
+data class ShareItem(
+    val path: String? = null,
+    val mime: String,
+    val text: String? = null,
+
+) {
+    companion object {
+        @Suppress("UNCHECKED_CAST")
+        fun fromList(list: List<Any?>): ShareItem {
+            val path = list[0] as String?
+            val mime = list[1] as String
+            val text = list[2] as String?
+            return ShareItem(path, mime, text)
+        }
+    }
+    fun toList(): List<Any?> {
+        return listOf<Any?>(
+            path,
+            mime,
+            text,
+        )
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+private object MoxxyPlatformApiCodec : StandardMessageCodec() {
+    override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
+        return when (type) {
+            128.toByte() -> {
+                return (readValue(buffer) as? List<Any?>)?.let {
+                    ShareItem.fromList(it)
+                }
+            }
+            else -> super.readValueOfType(type, buffer)
+        }
+    }
+    override fun writeValue(stream: ByteArrayOutputStream, value: Any?) {
+        when (value) {
+            is ShareItem -> {
+                stream.write(128)
+                writeValue(stream, value.toList())
+            }
+            else -> super.writeValue(stream, value)
+        }
+    }
+}
+
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface MoxxyPlatformApi {
     fun getPersistentDataPath(): String
     fun getCacheDataPath(): String
     fun openBatteryOptimisationSettings()
     fun isIgnoringBatteryOptimizations(): Boolean
+    fun shareItems(items: List<ShareItem>, genericMimeType: String)
 
     companion object {
         /** The codec used by MoxxyPlatformApi. */
         val codec: MessageCodec<Any?> by lazy {
-            StandardMessageCodec()
+            MoxxyPlatformApiCodec
         }
 
         /** Sets up an instance of `MoxxyPlatformApi` to handle messages through the `binaryMessenger`. */
@@ -113,6 +164,26 @@ interface MoxxyPlatformApi {
                         var wrapped: List<Any?>
                         try {
                             wrapped = listOf<Any?>(api.isIgnoringBatteryOptimizations())
+                        } catch (exception: Throwable) {
+                            wrapped = wrapError(exception)
+                        }
+                        reply.reply(wrapped)
+                    }
+                } else {
+                    channel.setMessageHandler(null)
+                }
+            }
+            run {
+                val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.moxxy_native.MoxxyPlatformApi.shareItems", codec)
+                if (api != null) {
+                    channel.setMessageHandler { message, reply ->
+                        val args = message as List<Any?>
+                        val itemsArg = args[0] as List<ShareItem>
+                        val genericMimeTypeArg = args[1] as String
+                        var wrapped: List<Any?>
+                        try {
+                            api.shareItems(itemsArg, genericMimeTypeArg)
+                            wrapped = listOf<Any?>(null)
                         } catch (exception: Throwable) {
                             wrapped = wrapError(exception)
                         }

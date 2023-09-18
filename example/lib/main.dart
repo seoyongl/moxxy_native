@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:moxxy_native/moxxy_native.dart';
+import 'package:path/path.dart' as p;
 import 'package:permission_handler/permission_handler.dart';
 
 @pragma('vm:entrypoint')
@@ -125,45 +126,101 @@ class MyAppState extends State<MyApp> {
             ),
             if (imagePath != null) Image.file(File(imagePath!)),
             TextButton(
-                onPressed: () async {
-                  // Create channel
-                  if (Platform.isAndroid) {
-                    await MoxxyNotificationsApi().createNotificationChannels(
-                      [
-                        NotificationChannel(
-                          id: 'foreground_service',
-                          title: 'Foreground service',
-                          description: 'lol',
-                          importance: NotificationChannelImportance.MIN,
-                          showBadge: false,
-                          vibration: false,
-                          enableLights: false,
-                        ),
-                      ],
-                    );
+              onPressed: () async {
+                // Create channel
+                if (Platform.isAndroid) {
+                  await MoxxyNotificationsApi().createNotificationChannels(
+                    [
+                      NotificationChannel(
+                        id: 'foreground_service',
+                        title: 'Foreground service',
+                        description: 'lol',
+                        importance: NotificationChannelImportance.MIN,
+                        showBadge: false,
+                        vibration: false,
+                        enableLights: false,
+                      ),
+                    ],
+                  );
 
-                    await Permission.notification.request();
-                  }
+                  await Permission.notification.request();
+                }
 
-                  final srv = getForegroundService();
-                  await srv.start(
-                    const ServiceConfig(
-                      serviceEntrypoint,
-                      serviceHandleData,
-                      'en',
+                final srv = getForegroundService();
+                await srv.start(
+                  const ServiceConfig(
+                    serviceEntrypoint,
+                    serviceHandleData,
+                    'en',
+                  ),
+                  (data) async {
+                    print('[FG] Received data $data');
+                  },
+                );
+
+                await Future<void>.delayed(const Duration(milliseconds: 600));
+                await getForegroundService().send(
+                  TestCommand(),
+                  awaitable: false,
+                );
+              },
+              child: const Text('Start foreground service'),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Pick a file and copy it into the internal storage directory
+                final mediaDir = Directory(
+                  p.join(
+                    await MoxxyPlatformApi().getPersistentDataPath(),
+                    'media',
+                  ),
+                );
+                if (!mediaDir.existsSync()) {
+                  await mediaDir.create(recursive: true);
+                }
+                final pickResult = await MoxxyPickerApi()
+                    .pickFiles(FilePickerType.image, true);
+                if (pickResult.isEmpty) return;
+
+                final shareItems = List<ShareItem>.empty(growable: true);
+                for (final result in pickResult) {
+                  final mediaDirPath = p.join(
+                    mediaDir.path,
+                    p.basename(result!),
+                  );
+                  await File(result).copy(mediaDirPath);
+
+                  shareItems.add(
+                    ShareItem(
+                      path: mediaDirPath,
+                      mime: 'image/jpeg',
                     ),
-                    (data) async {
-                      print('[FG] Received data $data');
-                    },
                   );
+                }
 
-                  await Future<void>.delayed(const Duration(milliseconds: 600));
-                  await getForegroundService().send(
-                    TestCommand(),
-                    awaitable: false,
-                  );
-                },
-                child: const Text('Start foreground service')),
+                // Share with the system
+                await MoxxyPlatformApi().shareItems(
+                  shareItems,
+                  'image/*',
+                );
+              },
+              child: const Text('Share internal files'),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Share with the system
+                await MoxxyPlatformApi().shareItems(
+                  [
+                    ShareItem(
+                      mime: 'text/plain',
+                      text: 'Hello World!',
+                    ),
+                  ],
+                  'text/*',
+                );
+              },
+              child: const Text('Share some text'),
+            ),
           ],
         ),
       ),

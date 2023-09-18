@@ -14,10 +14,8 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import androidx.core.app.TaskStackBuilder
-import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.IconCompat
 import org.moxxy.moxxy_native.MARK_AS_READ_ACTION
-import org.moxxy.moxxy_native.MOXXY_FILEPROVIDER_ID
 import org.moxxy.moxxy_native.NOTIFICATION_EXTRA_ID_KEY
 import org.moxxy.moxxy_native.NOTIFICATION_EXTRA_JID_KEY
 import org.moxxy.moxxy_native.NOTIFICATION_MESSAGE_EXTRA_MIME
@@ -27,7 +25,7 @@ import org.moxxy.moxxy_native.REPLY_ACTION
 import org.moxxy.moxxy_native.REPLY_TEXT_KEY
 import org.moxxy.moxxy_native.TAG
 import org.moxxy.moxxy_native.TAP_ACTION
-import java.io.File
+import org.moxxy.moxxy_native.content.MoxxyFileProvider
 
 class NotificationsImplementation(private val context: Context) : MoxxyNotificationsApi {
     override fun createNotificationGroups(groups: List<NotificationGroup>) {
@@ -207,11 +205,7 @@ class NotificationsImplementation(private val context: Context) : MoxxyNotificat
             )
             // If we got an image, turn it into a content URI and set it
             if (message.content.mime != null && message.content.path != null) {
-                val fileUri = FileProvider.getUriForFile(
-                    context,
-                    MOXXY_FILEPROVIDER_ID,
-                    File(message.content.path),
-                )
+                val fileUri = MoxxyFileProvider.getUriForPath(context, message.content.path)
                 msg.apply {
                     setData(message.content.mime, fileUri)
 

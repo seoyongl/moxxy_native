@@ -8,6 +8,60 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
 import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
 
+class ShareItem {
+  ShareItem({
+    this.path,
+    required this.mime,
+    this.text,
+  });
+
+  String? path;
+
+  String mime;
+
+  String? text;
+
+  Object encode() {
+    return <Object?>[
+      path,
+      mime,
+      text,
+    ];
+  }
+
+  static ShareItem decode(Object result) {
+    result as List<Object?>;
+    return ShareItem(
+      path: result[0] as String?,
+      mime: result[1]! as String,
+      text: result[2] as String?,
+    );
+  }
+}
+
+class _MoxxyPlatformApiCodec extends StandardMessageCodec {
+  const _MoxxyPlatformApiCodec();
+  @override
+  void writeValue(WriteBuffer buffer, Object? value) {
+    if (value is ShareItem) {
+      buffer.putUint8(128);
+      writeValue(buffer, value.encode());
+    } else {
+      super.writeValue(buffer, value);
+    }
+  }
+
+  @override
+  Object? readValueOfType(int type, ReadBuffer buffer) {
+    switch (type) {
+      case 128:
+        return ShareItem.decode(readValue(buffer)!);
+      default:
+        return super.readValueOfType(type, buffer);
+    }
+  }
+}
+
 class MoxxyPlatformApi {
   /// Constructor for [MoxxyPlatformApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
@@ -16,7 +70,7 @@ class MoxxyPlatformApi {
       : _binaryMessenger = binaryMessenger;
   final BinaryMessenger? _binaryMessenger;
 
-  static const MessageCodec<Object?> codec = StandardMessageCodec();
+  static const MessageCodec<Object?> codec = _MoxxyPlatformApiCodec();
 
   Future<String> getPersistentDataPath() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
@@ -118,6 +172,29 @@ class MoxxyPlatformApi {
       );
     } else {
       return (replyList[0] as bool?)!;
+    }
+  }
+
+  Future<void> shareItems(
+      List<ShareItem?> arg_items, String arg_genericMimeType) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.moxxy_native.MoxxyPlatformApi.shareItems', codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_items, arg_genericMimeType]) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else {
+      return;
     }
   }
 }

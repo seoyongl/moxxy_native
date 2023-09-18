@@ -4,7 +4,7 @@
     <application>
         <provider
             android:name="org.moxxy.moxxy_native.content.MoxxyFileProvider"
-            android:authorities="org.moxxy.moxxyv2.fileprovider"
+            android:authorities="org.moxxy.moxxyv2.fileprovider2"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

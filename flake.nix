@@ -44,7 +44,7 @@
     ]);
     lib = pkgs.lib;
     pinnedJDK = pkgs.jdk17;
-    flutterVersion = pkgs.flutter37;
+    flutterVersion = pkgs.flutter;
   in {
     devShell = pkgs.mkShell {
       buildInputs = with pkgs; [

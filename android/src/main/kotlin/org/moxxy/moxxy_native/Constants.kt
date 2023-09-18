@@ -24,7 +24,7 @@ const val NOTIFICATION_EXTRA_ID_KEY = "notification_id"
 const val NOTIFICATION_MESSAGE_EXTRA_MIME = "mime"
 const val NOTIFICATION_MESSAGE_EXTRA_PATH = "path"
 
-const val MOXXY_FILEPROVIDER_ID = "org.moxxy.moxxyv2.fileprovider"
+const val MOXXY_FILEPROVIDER_ID = "org.moxxy.moxxyv2.fileprovider2"
 
 // Shared preferences keys
 const val SHARED_PREFERENCES_KEY = "org.moxxy.moxxyv2"
