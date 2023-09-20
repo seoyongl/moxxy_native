@@ -15,7 +15,6 @@ import androidx.core.app.RemoteInput
 import androidx.core.content.FileProvider
 import org.moxxy.moxxy_native.MARK_AS_READ_ACTION
 import org.moxxy.moxxy_native.MOXXY_FILEPROVIDER_ID
-import org.moxxy.moxxy_native.MoxxyEventChannels
 import org.moxxy.moxxy_native.NOTIFICATION_EXTRA_ID_KEY
 import org.moxxy.moxxy_native.NOTIFICATION_EXTRA_JID_KEY
 import org.moxxy.moxxy_native.NOTIFICATION_MESSAGE_EXTRA_MIME
@@ -50,7 +49,7 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun handleMarkAsRead(context: Context, intent: Intent) {
-        MoxxyEventChannels.notificationEventSink?.success(
+        NotificationStreamHandler.sink?.success(
             NotificationEvent(
                 intent.getLongExtra(NOTIFICATION_EXTRA_ID_KEY, -1),
                 intent.getStringExtra(NOTIFICATION_EXTRA_JID_KEY)!!,
@@ -65,7 +64,7 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun handleReply(context: Context, intent: Intent) {
         val remoteInput = RemoteInput.getResultsFromIntent(intent) ?: return
         val replyPayload = remoteInput.getCharSequence(REPLY_TEXT_KEY)
-        MoxxyEventChannels.notificationEventSink?.success(
+        NotificationStreamHandler.sink?.success(
             NotificationEvent(
                 intent.getLongExtra(NOTIFICATION_EXTRA_ID_KEY, -1),
                 intent.getStringExtra(NOTIFICATION_EXTRA_JID_KEY)!!,
@@ -165,7 +164,7 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun handleTap(context: Context, intent: Intent) {
-        MoxxyEventChannels.notificationEventSink?.success(
+        NotificationStreamHandler.sink?.success(
             NotificationEvent(
                 intent.getLongExtra(NOTIFICATION_EXTRA_ID_KEY, -1),
                 intent.getStringExtra(NOTIFICATION_EXTRA_JID_KEY)!!,

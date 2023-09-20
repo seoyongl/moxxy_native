@@ -5,6 +5,9 @@ const val TAG = "moxxy_native"
 // The event channel name for the keyboard height
 const val KEYBOARD_HEIGHT_EVENT_CHANNEL_NAME = "org.moxxy.moxxyv2/keyboard_stream"
 
+// The event channel name for notification events
+const val NOTIFICATION_EVENT_CHANNEL_NAME = "org.moxxy.moxxyv2/notification_stream"
+
 // The size of buffers to use for various operations
 const val BUFFER_SIZE = 4096
 

@@ -25,6 +25,7 @@ import org.moxxy.moxxy_native.media.MediaImplementation
 import org.moxxy.moxxy_native.media.MoxxyMediaApi
 import org.moxxy.moxxy_native.notifications.MoxxyNotificationsApi
 import org.moxxy.moxxy_native.notifications.NotificationEvent
+import org.moxxy.moxxy_native.notifications.NotificationStreamHandler
 import org.moxxy.moxxy_native.notifications.NotificationsImplementation
 import org.moxxy.moxxy_native.picker.FilePickerType
 import org.moxxy.moxxy_native.picker.MoxxyPickerApi
@@ -36,23 +37,6 @@ import org.moxxy.moxxy_native.service.BackgroundService
 import org.moxxy.moxxy_native.service.MoxxyServiceApi
 import org.moxxy.moxxy_native.service.PluginTracker
 import org.moxxy.moxxy_native.service.ServiceImplementation
-
-object MoxxyEventChannels {
-    var notificationChannel: EventChannel? = null
-    var notificationEventSink: EventChannel.EventSink? = null
-}
-
-object NotificationStreamHandler : EventChannel.StreamHandler {
-    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
-        Log.d(TAG, "NotificationStreamHandler: Attached stream")
-        MoxxyEventChannels.notificationEventSink = events
-    }
-
-    override fun onCancel(arguments: Any?) {
-        Log.d(TAG, "NotificationStreamHandler: Detached stream")
-        MoxxyEventChannels.notificationEventSink = null
-    }
-}
 
 /*
  * Hold the last notification event in case we did a cold start.
@@ -106,6 +90,10 @@ class MoxxyNativePlugin : FlutterPlugin, ActivityAware, ServiceAware, BroadcastR
         // Special handling for the keyboard height
         val keyboardChannel = EventChannel(flutterPluginBinding.getBinaryMessenger(), KEYBOARD_HEIGHT_EVENT_CHANNEL_NAME)
         keyboardChannel?.setStreamHandler(KeyboardStreamHandler)
+
+        // Special handling from notification events
+        val notificationChannel = EventChannel(flutterPluginBinding.getBinaryMessenger(), NOTIFICATION_EVENT_CHANNEL_NAME)
+        notificationChannel?.setStreamHandler(NotificationStreamHandler)
 
         // Register the picker handler
         pickerListener = PickerResultListener(context!!)

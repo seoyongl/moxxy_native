@@ -8,7 +8,6 @@ import android.view.ViewTreeObserver
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import io.flutter.plugin.common.EventChannel
-import org.moxxy.moxxy_native.MoxxyEventChannels
 import org.moxxy.moxxy_native.TAG
 
 object KeyboardStreamHandler : EventChannel.StreamHandler {
@@ -67,7 +66,7 @@ object KeyboardStreamHandler : EventChannel.StreamHandler {
     }
 
     override fun onCancel(arguments: Any?) {
-        MoxxyEventChannels.notificationEventSink = null
+        sink = null
         Log.d(TAG, "KeyboardStreamHandler: Detached stream")
     }
 }
