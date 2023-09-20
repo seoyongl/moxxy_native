@@ -10,6 +10,7 @@ import android.provider.MediaStore.Images
 import android.util.Log
 import io.flutter.plugin.common.PluginRegistry.ActivityResultListener
 import org.moxxy.moxxy_native.AsyncRequestTracker
+import org.moxxy.moxxy_native.BUFFER_SIZE
 import org.moxxy.moxxy_native.PICK_FILES_REQUEST
 import org.moxxy.moxxy_native.PICK_FILE_REQUEST
 import org.moxxy.moxxy_native.PICK_FILE_WITH_DATA_REQUEST
@@ -63,7 +64,7 @@ class PickerResultListener(private val context: Context) : ActivityResultListene
         if (Build.VERSION.SDK_INT >= 33) {
             android.os.FileUtils.copy(input, output)
         } else {
-            val buffer = ByteArray(4096)
+            val buffer = ByteArray(BUFFER_SIZE)
             while (input.read(buffer).also {} != -1) {
                 output.write(buffer)
             }
@@ -106,7 +107,7 @@ class PickerResultListener(private val context: Context) : ActivityResultListene
         }
 
         val returnBuffer = mutableListOf<Byte>()
-        val readBuffer = ByteArray(4096)
+        val readBuffer = ByteArray(BUFFER_SIZE)
         try {
             val inputStream = context.contentResolver.openInputStream(data!!.data!!)!!
             while (inputStream.read(readBuffer).also {} != -1) {
