@@ -94,7 +94,7 @@ class NotificationsImplementation(private val context: Context) : MoxxyNotificat
             context.applicationContext,
             0,
             replyIntent,
-            PendingIntent.FLAG_MUTABLE,
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
         val replyAction = NotificationCompat.Action.Builder(
             R.drawable.reply,
@@ -113,13 +113,14 @@ class NotificationsImplementation(private val context: Context) : MoxxyNotificat
 
             notification.extra?.forEach {
                 putExtra("payload_${it.key}", it.value)
+                Log.d(TAG, "Adding payload_${it.key} -> ${it.value}")
             }
         }
         val markAsReadPendingIntent = PendingIntent.getBroadcast(
             context.applicationContext,
             0,
             markAsReadIntent,
-            PendingIntent.FLAG_IMMUTABLE,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
         val markAsReadAction = NotificationCompat.Action.Builder(
             R.drawable.mark_as_read,
@@ -250,7 +251,7 @@ class NotificationsImplementation(private val context: Context) : MoxxyNotificat
             setCategory(Notification.CATEGORY_MESSAGE)
 
             // Prevent no notification when we replied before
-            setOnlyAlertOnce(false)
+            setOnlyAlertOnce(true)
 
             // Automatically dismiss the notification on tap
             setAutoCancel(true)
