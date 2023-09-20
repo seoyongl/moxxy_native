@@ -7,7 +7,7 @@ object MimeUtils {
         "image/apng" to ".apng",
         "image/avif" to ".avif",
         "image/gif" to ".gif",
-        "image/jpeg" to ".jpeg",
+        "image/jpeg" to ".jpg",
         "image/webp" to ".webp",
     )
 }
