@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.provider.OpenableColumns
+import android.provider.MediaStore.Images
 import android.util.Log
 import io.flutter.plugin.common.PluginRegistry.ActivityResultListener
 import org.moxxy.moxxy_native.AsyncRequestTracker
@@ -29,10 +29,22 @@ class PickerResultListener(private val context: Context) : ActivityResultListene
     private fun queryFileName(context: Context, uri: Uri): String {
         var result: String? = null
         if (uri.scheme == "content") {
+            val projection = arrayOf(
+                Images.Media._ID,
+                Images.Media.MIME_TYPE,
+                Images.Media.DISPLAY_NAME,
+            )
             val cursor = context.contentResolver.query(uri, null, null, null, null)
             cursor.use { cursor ->
                 if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                    val mimeType = cursor.getString(cursor.getColumnIndex(Images.Media.MIME_TYPE))
+                    val displayName = cursor.getString(cursor.getColumnIndex(Images.Media.DISPLAY_NAME))
+                    val fileExtension = MimeUtils.imageMimeTypesToFileExtension[mimeType]
+
+                    // Note: This is a workaround for the Dart image library failing to parse the file
+                    //       because displayName somehow is always ".jpg", which confuses image.
+                    result = if (fileExtension != null) "$displayName$fileExtension" else displayName
+                    Log.d(TAG, "Returning $result as filename (MIME: $mimeType)")
                 }
             }
         }
