@@ -21,6 +21,26 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
+/*
+ * Attempt to replace the file extension in @fileName with @newExtension. If @newExtension is null,
+ * then @fileName is returned verbatim.
+ * */
+private fun maybeReplaceExtension(fileName: String, newExtension: String?): String {
+    if (newExtension == null) {
+        return fileName
+    }
+
+    assert(newExtension[0] == '.')
+    val parts = fileName.split(".")
+    return if (parts.size == 1) {
+        "$fileName$newExtension"
+    } else {
+        // Split at the ".", join all but the list end together and append the new extension
+        val fileNameWithoutExtension = parts.subList(0, parts.size - 1).joinToString(".")
+        "$fileNameWithoutExtension$newExtension"
+    }
+}
+
 class PickerResultListener(private val context: Context) : ActivityResultListener {
     /*
      * Attempt to deduce the filename for the URI @uri.
@@ -44,7 +64,7 @@ class PickerResultListener(private val context: Context) : ActivityResultListene
 
                     // Note: This is a workaround for the Dart image library failing to parse the file
                     //       because displayName somehow is always ".jpg", which confuses image.
-                    result = if (fileExtension != null) "$displayName$fileExtension" else displayName
+                    result = maybeReplaceExtension(displayName, fileExtension)
                     Log.d(TAG, "Returning $result as filename (MIME: $mimeType)")
                 }
             }
